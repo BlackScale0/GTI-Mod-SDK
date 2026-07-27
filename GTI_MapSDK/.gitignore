@@ -1,0 +1,25 @@
+# Unity generated (safe to exclude, Unity rebuilds these)
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+Logs/
+UserSettings/
+
+# IDE and editor folders
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userprefs
+*.pidb
+
+# OS junk
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Unity auto-generated meta files for empty folders (optional but common)
+# The folders themselves need to exist, so Unity uses .gitkeep instead

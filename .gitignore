@@ -1,0 +1,15 @@
+push.bat
+update.bat
+bin/
+obj/
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.csproj.user
+*.pdb
+*.mdb
+.DS_Store
+Thumbs.db
+Desktop.ini

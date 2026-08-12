@@ -70,6 +70,10 @@ public class NpcZone : MonoBehaviour
     [SerializeField] private bool fillOutline = true;
     [Tooltip("Marks this zone as restricted (e.g. staff-only back room). Employees and police react instantly when they see a player standing inside.")]
     [SerializeField] private bool isRestrictedArea = false;
+    [Tooltip("Keep this zone OUT of the list of places a player can phone the police about (the phone utility's \"report a store\" page). Use it for a store or staff area that would be a nonsense or unfair thing to call in: a shop with no way out, the room the vans park in, a zone that only exists to steer NPCs. The zone works exactly as normal in every other respect.")]
+    [SerializeField] private bool excludeFromReports = false;
+    [Tooltip("Player-facing name of this store, used anywhere the game has to let a player pick one off a list (the phone's \"report a store\" page). Leave it empty and the zone object's own name is used as-is. Ignored on restricted zones, which always read as \"Restricted Area\" so nobody phoning one in has to know what staff call it.")]
+    [SerializeField] private string displayName = "";
     [Tooltip("Store zones only. Hand-placed doorway boxes marking the ways out of the store. A player carrying or hauling an item who steps into one is treated as walking out with stolen goods.")]
     [SerializeField] private ExitBox[] storeExits;
 
@@ -115,6 +119,57 @@ public class NpcZone : MonoBehaviour
 
     private void OnEnable() => _registry.Add(this);
     private void OnDisable() => _registry.Remove(this);
+
+    /// <summary>
+    /// The name to show a player when this zone appears in a list. Staff-only zones are always
+    /// just "Restricted Area": a customer phoning one in would not know, or care, what the shop
+    /// calls its stockroom. Everything else uses the name set in the Inspector, falling back to
+    /// whatever the zone object itself was called.
+    /// </summary>
+    public string DisplayName =>
+        isRestrictedArea
+            ? IST.Localization.Loc.Get("phone.restrictedArea")
+            : (string.IsNullOrWhiteSpace(displayName) ? gameObject.name : displayName);
+
+    /// <summary>
+    /// Stable identifier for this zone across the network. Zones are plain scene objects with no
+    /// NetworkIdentity, so a report naming one has to travel as a string: the object name is
+    /// identical on every machine because every machine loaded the same scene.
+    /// </summary>
+    public string ZoneKey => gameObject.name;
+
+    /// <summary>
+    /// True if this zone is somewhere a player could sensibly phone the police about: a shop, or
+    /// any staff-only area. Hallways and the car park are not - "there is a man in the corridor"
+    /// is not a tip, and a report that could name the whole map would be area denial with no cost.
+    /// Individual zones can still be held back with <c>excludeFromReports</c>.
+    /// </summary>
+    public bool IsReportable =>
+        !excludeFromReports && (zoneType == ZoneType.Store || isRestrictedArea);
+
+    /// <summary>Finds a reportable zone by its <see cref="ZoneKey"/>, or null. Used by the server
+    /// to resolve the zone a client picked off the phone's list.</summary>
+    public static NpcZone FindReportableByKey(string key)
+    {
+        if (string.IsNullOrEmpty(key)) return null;
+        foreach (NpcZone zone in _registry)
+            if (zone.IsReportable && zone.ZoneKey == key)
+                return zone;
+        return null;
+    }
+
+    /// <summary>Every zone a player may report, ordered by display name, so the picker list reads
+    /// the same way every round instead of following whatever order the scene happened to enable
+    /// them in.</summary>
+    public static List<NpcZone> ReportableZones()
+    {
+        var result = new List<NpcZone>();
+        foreach (NpcZone zone in _registry)
+            if (zone.IsReportable)
+                result.Add(zone);
+        result.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, System.StringComparison.OrdinalIgnoreCase));
+        return result;
+    }
 
     public static NpcZone[] GetAll(ZoneType type)
     {
@@ -545,6 +600,56 @@ public class NpcZoneEditor : Editor
         }
     }
 
+    /// <summary>
+    /// The default inspector, minus the display name on a restricted zone. A staff-only area always
+    /// reads as "Restricted Area" wherever a player sees it, so offering a name field there would
+    /// only invite someone to type one that the game then ignores.
+    /// </summary>
+    private void DrawInspectorFields()
+    {
+        serializedObject.Update();
+
+        bool restricted = serializedObject.FindProperty("isRestrictedArea").boolValue;
+        bool excluded = serializedObject.FindProperty("excludeFromReports").boolValue;
+
+        SerializedProperty prop = serializedObject.GetIterator();
+        bool enterChildren = true;
+        while (prop.NextVisible(enterChildren))
+        {
+            enterChildren = false;
+
+            if (prop.propertyPath == "m_Script")
+            {
+                using (new EditorGUI.DisabledScope(true)) EditorGUILayout.PropertyField(prop);
+                continue;
+            }
+
+            if (prop.propertyPath == "displayName")
+            {
+                if (excluded)
+                {
+                    EditorGUILayout.LabelField("Display Name", "Not shown (excluded from reports)");
+                    continue;
+                }
+
+                if (restricted)
+                {
+                    EditorGUILayout.LabelField("Display Name", "Restricted Area (fixed)");
+                    continue;
+                }
+
+                EditorGUILayout.PropertyField(prop);
+                if (string.IsNullOrWhiteSpace(prop.stringValue))
+                    EditorGUILayout.LabelField(" ", $"Players will see \"{((NpcZone)target).gameObject.name}\"");
+                continue;
+            }
+
+            EditorGUILayout.PropertyField(prop, true);
+        }
+
+        serializedObject.ApplyModifiedProperties();
+    }
+
     /// <summary>Screen-facing cross so "+" buttons read clearly as "add".</summary>
     private static void AddCap(int controlID, Vector3 position, Quaternion rotation, float size, EventType eventType)
     {
@@ -593,7 +698,7 @@ public class NpcZoneEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        DrawDefaultInspector();
+        DrawInspectorFields();
 
         var zone = (NpcZone)target;
         SerializedObject so = new SerializedObject(zone);

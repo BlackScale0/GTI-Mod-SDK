@@ -1,4 +1,4 @@
-%YAML 1.1
+﻿%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &25904495641377031
 GameObject:
@@ -689,7 +689,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df098e2ead7b61149a8439035dc618ba, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ISTMapMarker
+  m_EditorClassIdentifier: Assembly-CSharp::GTIMapMarker
   kind: 5
   lootWeight: 1
   lootSizes: -1

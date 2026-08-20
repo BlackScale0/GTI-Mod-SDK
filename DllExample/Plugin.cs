@@ -2,17 +2,17 @@ using BepInEx;
 using BepInEx.Unity.Mono;
 using UnityEngine;
 
-namespace ISTDllExample
+namespace GTIDllExample
 {
     [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
     public class Plugin : BaseUnityPlugin
     {
-        public const string PluginGuid    = "com.ist.dllexample";
-        public const string PluginName    = "IST DLL Example";
+        public const string PluginGuid    = "com.gti.dllexample";
+        public const string PluginName    = "GTI DLL Example";
         public const string PluginVersion = "1.0.0";
 
         // ClientOnly: only affects local movement, no sync needed. See README section 5.
-        public const string ISTCompat = "ClientOnly";
+        public const string GTICompat = "ClientOnly";
 
         private const KeyCode ToggleKey       = KeyCode.F1;
         private const float   SpeedMultiplier = 4f;

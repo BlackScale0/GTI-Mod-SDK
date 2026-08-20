@@ -1,9 +1,9 @@
-using UnityEngine;
+﻿using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-public class ISTMapMarker : MonoBehaviour
+public class GTIMapMarker : MonoBehaviour
 {
     public enum Kind
     {
@@ -93,7 +93,7 @@ public class ISTMapMarker : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Handles.color = Color.white;
-        string label = $"IST {kind}";
+        string label = $"GTI {kind}";
         if (kind == Kind.GarbageBin) label += $" ({binType})";
         else if (kind == Kind.LootSpawn) label += $" ({LootSizesLabel()})";
         Handles.Label(transform.position + Vector3.up * 0.3f, label, EditorStyles.boldLabel);

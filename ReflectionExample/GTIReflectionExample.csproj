@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <AssemblyName>ISTDllExample</AssemblyName>
+    <AssemblyName>GTIReflectionExample</AssemblyName>
     <LangVersion>latest</LangVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
@@ -44,19 +44,6 @@
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
       <HintPath>$(ManagedDir)\UnityEngine.InputLegacyModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-
-    <!--
-      Game and networking assemblies. Private=false means they are NOT bundled into
-      your mod's output DLL. The game already has them; bundling would cause conflicts.
-    -->
-    <Reference Include="Assembly-CSharp">
-      <HintPath>$(ManagedDir)\Assembly-CSharp.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="Mirror">
-      <HintPath>$(ManagedDir)\Mirror.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

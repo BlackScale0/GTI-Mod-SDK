@@ -8,7 +8,7 @@ using UnityEngine;
 /// Usage:
 ///   1. Open your NPC prefab (double-click it in the Project window).
 ///   2. Expand its skeleton in the Hierarchy panel until you can see individual bones.
-///   3. Open this window via IST > Setup NPC Ragdoll in the top menu bar.
+///   3. Open this window via GTI > Setup NPC Ragdoll in the top menu bar.
 ///   4. Drag each bone from the Hierarchy into the matching slot.
 ///   5. Click Build Ragdoll.
 ///   6. Add the NPCRagdoll script to the NPC root and drag the Pelvis/Hips bone
@@ -32,7 +32,7 @@ public class RagdollCreatorWindow : EditorWindow
 
     private float _totalMass = 20f;
 
-    [MenuItem("IST/Setup NPC Ragdoll")]
+    [MenuItem("GTI/Setup NPC Ragdoll")]
     public static void Open() => GetWindow<RagdollCreatorWindow>("Ragdoll Setup");
 
     private void OnGUI()
@@ -159,7 +159,7 @@ public class RagdollCreatorWindow : EditorWindow
 
         Undo.CollapseUndoOperations(undoGroup);
 
-        Debug.Log("[IST] Ragdoll built. Now add NPCRagdoll to the NPC root and set Root Bone to the Pelvis/Hips bone.");
+        Debug.Log("[GTI] Ragdoll built. Now add NPCRagdoll to the NPC root and set Root Bone to the Pelvis/Hips bone.");
     }
 
     private static void AddBone(

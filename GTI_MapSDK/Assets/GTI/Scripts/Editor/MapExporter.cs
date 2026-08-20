@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Exports the open scene as a Grand Theft Idiots custom map: one AssetBundle plus a
-/// <c>.istmap.json</c> manifest beside it. Those two files ARE the map — drop them in
+/// <c>.gtimap.json</c> manifest beside it. Those two files ARE the map — drop them in
 /// BepInEx/plugins and the game picks them up. No plugin DLL, no C#.
 ///
 /// The window collects the map's identity (id / display name / version), which used to live
@@ -19,7 +19,7 @@ using UnityEngine.SceneManagement;
 public class MapExporter : EditorWindow
 {
     private const string ExportDirectory = "MapExports";
-    private const string PrefsPrefix = "IST.MapExporter.";
+    private const string PrefsPrefix = "GTI.MapExporter.";
 
     private string _mapId;
     private string _displayName;
@@ -29,7 +29,7 @@ public class MapExporter : EditorWindow
     private string _sceneName;
     private Vector2 _scroll;
 
-    [MenuItem("IST/Export Current Map")]
+    [MenuItem("GTI/Export Current Map")]
     public static void Open()
     {
         var window = GetWindow<MapExporter>(true, "Export Map", true);
@@ -97,7 +97,7 @@ public class MapExporter : EditorWindow
         string bundleName = BundleName();
         EditorGUILayout.LabelField("Will export", EditorStyles.boldLabel);
         EditorGUILayout.LabelField("  " + bundleName);
-        EditorGUILayout.LabelField("  " + bundleName + ".istmap.json");
+        EditorGUILayout.LabelField("  " + bundleName + ".gtimap.json");
 
         EditorGUILayout.Space();
         DrawIdentityWarnings();
@@ -173,7 +173,7 @@ public class MapExporter : EditorWindow
 
         string bundleName = BundleName();
 
-        EditorUtility.DisplayProgressBar("IST Map Exporter", "Compiling Map AssetBundle...", 0.5f);
+        EditorUtility.DisplayProgressBar("GTI Map Exporter", "Compiling Map AssetBundle...", 0.5f);
         try
         {
             // An explicit build map builds exactly this one bundle. The old approach assigned
@@ -194,7 +194,7 @@ public class MapExporter : EditorWindow
 
             if (result == null)
             {
-                Debug.LogError("[IST SDK] Map Export Failed: the AssetBundle build returned no manifest. " +
+                Debug.LogError("[GTI SDK] Map Export Failed: the AssetBundle build returned no manifest. " +
                                "Check the Console for import errors in your scene.");
                 EditorUtility.DisplayDialog("Build Failed", "Something went wrong. Check the Unity Console for details.", "OK");
                 return;
@@ -202,7 +202,7 @@ public class MapExporter : EditorWindow
 
             string manifestPath = WriteManifest(bundleName);
 
-            Debug.Log($"[IST SDK] Map exported to: {Path.GetFullPath(Path.Combine(ExportDirectory, bundleName))}");
+            Debug.Log($"[GTI SDK] Map exported to: {Path.GetFullPath(Path.Combine(ExportDirectory, bundleName))}");
             EditorUtility.RevealInFinder(Path.Combine(ExportDirectory, bundleName));
 
             EditorUtility.DisplayDialog("Success!",
@@ -214,7 +214,7 @@ public class MapExporter : EditorWindow
         }
         catch (Exception e)
         {
-            Debug.LogError($"[IST SDK] Map Export Failed: {e.Message}");
+            Debug.LogError($"[GTI SDK] Map Export Failed: {e.Message}");
             EditorUtility.DisplayDialog("Build Failed", "Something went wrong. Check the Unity Console for details.", "OK");
         }
         finally
@@ -232,7 +232,7 @@ public class MapExporter : EditorWindow
         public string bundle;
     }
 
-    /// <summary>Writes the .istmap.json next to the bundle and returns its path.</summary>
+    /// <summary>Writes the .gtimap.json next to the bundle and returns its path.</summary>
     private string WriteManifest(string bundleName)
     {
         var manifest = new MapManifest
@@ -243,7 +243,7 @@ public class MapExporter : EditorWindow
             bundle = bundleName,
         };
 
-        string path = Path.Combine(ExportDirectory, bundleName + ".istmap.json");
+        string path = Path.Combine(ExportDirectory, bundleName + ".gtimap.json");
         File.WriteAllText(path, JsonUtility.ToJson(manifest, true));
         return path;
     }
@@ -257,7 +257,7 @@ public class MapExporter : EditorWindow
             if ((cam.CompareTag("MainCamera") || cam.name.Contains("Main Camera")) && !cam.CompareTag("EditorOnly"))
             {
                 cam.tag = "EditorOnly";
-                Debug.Log("[IST SDK] Auto-tagged Camera to 'EditorOnly' so it doesn't fight the game's camera.");
+                Debug.Log("[GTI SDK] Auto-tagged Camera to 'EditorOnly' so it doesn't fight the game's camera.");
                 sceneModified = true;
             }
         }
@@ -267,7 +267,7 @@ public class MapExporter : EditorWindow
             if (light.type == LightType.Directional && light.name.Contains("Directional Light") && !light.CompareTag("EditorOnly"))
             {
                 light.tag = "EditorOnly";
-                Debug.Log("[IST SDK] Auto-tagged Directional Light to 'EditorOnly' so it doesn't fight the Time of Day system.");
+                Debug.Log("[GTI SDK] Auto-tagged Directional Light to 'EditorOnly' so it doesn't fight the Time of Day system.");
                 sceneModified = true;
             }
         }
@@ -280,12 +280,12 @@ public class MapExporter : EditorWindow
 
     private static bool ValidateMarkers(out string report, out bool fatal)
     {
-        ISTMapMarker[] markers = FindObjectsByType<ISTMapMarker>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        GTIMapMarker[] markers = FindObjectsByType<GTIMapMarker>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
-        int spawns  = markers.Count(m => m.kind == ISTMapMarker.Kind.PlayerSpawn);
-        int cameras = markers.Count(m => m.kind == ISTMapMarker.Kind.SecurityCamera);
-        int loot    = markers.Count(m => m.kind == ISTMapMarker.Kind.LootSpawn);
-        int vans    = markers.Count(m => m.kind == ISTMapMarker.Kind.ExtractionVan);
+        int spawns  = markers.Count(m => m.kind == GTIMapMarker.Kind.PlayerSpawn);
+        int cameras = markers.Count(m => m.kind == GTIMapMarker.Kind.SecurityCamera);
+        int loot    = markers.Count(m => m.kind == GTIMapMarker.Kind.LootSpawn);
+        int vans    = markers.Count(m => m.kind == GTIMapMarker.Kind.ExtractionVan);
 
         var sb = new StringBuilder();
         fatal = false;
@@ -319,8 +319,8 @@ public class MapExporter : EditorWindow
     /// </summary>
     private static readonly HashSet<string> AllowedGameTypes = new HashSet<string>(StringComparer.Ordinal)
     {
-        "ISTMapMarker",
-        "ISTMapConfig",
+        "GTIMapMarker",
+        "GTIMapConfig",
         "NpcZone",
     };
 

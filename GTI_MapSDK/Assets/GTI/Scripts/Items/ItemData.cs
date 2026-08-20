@@ -2,14 +2,14 @@ using UnityEngine;
 
 /// <summary>
 /// Defines a single item type. Create one asset per item via the
-/// Assets > Create > IST > Item Data menu. Assign the asset to the
+/// Assets > Create > GTI > Item Data menu. Assign the asset to the
 /// Item component on the matching prefab.
 ///
 /// For 50+ items, keep all assets in Assets/Data/Items/ and name them
 /// clearly (e.g. "TV_ItemData", "Laptop_ItemData") so the Project window
 /// stays navigable.
 /// </summary>
-[CreateAssetMenu(fileName = "NewItem", menuName = "IST/Item Data")]
+[CreateAssetMenu(fileName = "NewItem", menuName = "GTI/Item Data")]
 public class ItemData : ScriptableObject
 {
     [Tooltip("Display name shown in the HUD and price canvas.")]

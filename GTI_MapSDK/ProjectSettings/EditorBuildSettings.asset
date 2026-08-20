@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Project/Scenes/MainMenu.unity
     guid: fb8f79821e285764a9c9cd8826631133
-  - enabled: 1
+  - enabled: 0
     path: Assets/Project/Scenes/HeistMap.unity
     guid: 3b13934e84ee0724295bbe142ceb0702
   m_configObjects:

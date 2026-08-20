@@ -1,5 +1,5 @@
-<p align="center">
-  <img src="logo.jpg" alt="Idiots Stealing Things" width="640">
+﻿<p align="center">
+  <img src="logo.jpg" alt="Grand Theft Idiots" width="640">
 </p>
 
 <h1 align="center">Mod SDK</h1>
@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://store.steampowered.com/app/4919380/Idiots_Stealing_Things/">
+  <a href="https://store.steampowered.com/app/4919380/Grand_Theft_Idiots/">
     <img src="https://img.shields.io/badge/Steam-Wishlist%20Now-1b2838?style=for-the-badge&logo=steam&logoColor=white" alt="Steam">
   </a>
   <a href="https://discord.gg/azsScpGF5p">
@@ -37,7 +37,7 @@ If you only want to build a map, skip straight to section 8.
 
 ## 1. Install the correct BepInEx version
 
-Idiots Stealing Things is built on **Unity 6 (6000.x), Mono, 64-bit**, so it requires a compatible BepInEx build.
+Grand Theft Idiots is built on **Unity 6 (6000.x), Mono, 64-bit**, so it requires a compatible BepInEx build.
 
 Use **BepInEx-Unity.Mono-win-x64-6.0.0-be.755+3fab71a**:
 
@@ -60,7 +60,7 @@ Mods are compiled as `.dll` files created from a BepInEx plugin project.
 3. Place the `.dll` into the plugins folder:
 
 ```
-C:\Program Files (x86)\Steam\steamapps\common\Idiots Stealing Things\BepInEx\plugins
+C:\Program Files (x86)\Steam\steamapps\common\Grand Theft Idiots\BepInEx\plugins
 ```
 
 4. Start the game
@@ -73,7 +73,7 @@ C:\Program Files (x86)\Steam\steamapps\common\Idiots Stealing Things\BepInEx\plu
 Mods can also be installed using a mod manager, either **Thunderstore Mod Manager** or **r2modman**.
 
 1. Install either manager
-2. Create a profile for **Idiots Stealing Things**
+2. Create a profile for **Grand Theft Idiots**
 3. Install mods directly through the manager
 4. Click **Start Modded** to launch the game with mods enabled
 
@@ -89,14 +89,14 @@ This method handles installation paths and dependencies automatically, making it
 After installing BepInEx correctly, your game directory should look like this:
 
 ```
-Idiots Stealing Things/
+Grand Theft Idiots/
 ├── BepInEx/
 │   ├── config/
 │   ├── plugins/   <- mods and maps go here
 │   ├── LogOutput.log
 ├── doorstop_config.ini
 ├── winhttp.dll
-├── Idiots Stealing Things.exe
+├── Grand Theft Idiots.exe
 ```
 
 </details>
@@ -118,14 +118,14 @@ For simple local mods, or anything that only touches a few fields, reflection is
 The game DLLs are in:
 
 ```
-Idiots Stealing Things/Idiots Stealing Things_Data/Managed/
+Grand Theft Idiots/Grand Theft Idiots_Data/Managed/
 ```
 
 The ones you will most commonly need:
 
 | DLL | Contains |
 |-----|----------|
-| `Assembly-CSharp.dll` | All game-specific code (PlayerController, ISTNetworkManager, etc.) |
+| `Assembly-CSharp.dll` | All game-specific code (PlayerController, GTINetworkManager, etc.) |
 | `Mirror.dll` | Networking (NetworkBehaviour, NetworkServer, etc.) |
 | `UnityEngine.CoreModule.dll` | Core Unity types |
 
@@ -148,15 +148,15 @@ Add them to your `.csproj` like this, with `Private=false` so they are not bundl
 
 ## 6. Host and client mod matching
 
-Idiots Stealing Things checks mods during the join handshake. By default, **a mod must be installed on the host and every client at the same version**. If you join a host whose mods you do not have, or the other way around, you are rejected with a list of what to fix.
+Grand Theft Idiots checks mods during the join handshake. By default, **a mod must be installed on the host and every client at the same version**. If you join a host whose mods you do not have, or the other way around, you are rejected with a list of what to fix.
 
-A mod can relax that by declaring a compatibility level. Add a single `const string` named `ISTCompat` to your plugin class:
+A mod can relax that by declaring a compatibility level. Add a single `const string` named `GTICompat` to your plugin class:
 
 ```csharp
 [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
 public class Plugin : BaseUnityPlugin
 {
-    public const string ISTCompat = "ClientOnly";
+    public const string GTICompat = "ClientOnly";
 }
 ```
 
@@ -169,7 +169,7 @@ public class Plugin : BaseUnityPlugin
 Notes:
 
 * The value is case-insensitive, so `"client"`, `"server"` and `"all"` also work.
-* Omitting `ISTCompat`, or typing it wrong, is treated as `Everyone`, which is the safe default.
+* Omitting `GTICompat`, or typing it wrong, is treated as `Everyone`, which is the safe default.
 * When in doubt, leave it as `Everyone`. Only mark a mod `ClientOnly` if it genuinely has no effect on anyone else's game.
 * **Custom maps are not mods and never touch this gate.** Missing a map does not stop you joining a lobby. The game runs its own availability check once a host actually picks the map, covered in section 8.
 
@@ -200,7 +200,7 @@ A map is **data**, not code. It ships as an AssetBundle plus a small JSON manife
 ```
 BepInEx/plugins/CoolMapPack/
 ├── demomap_map              <- your exported bundle
-└── demomap_map.istmap.json  <- the manifest
+└── demomap_map.gtimap.json  <- the manifest
 ```
 
 ```json
@@ -212,7 +212,7 @@ BepInEx/plugins/CoolMapPack/
 }
 ```
 
-The SDK's exporter writes both files for you, so you never hand-edit the JSON. At startup the game scans `BepInEx/plugins` (including subfolders) for `*.istmap.json` and registers every map it finds, then handles the rest at runtime: listing it in the lobby's Match Settings map picker, warning players who do not have it, loading the bundle on every machine, baking the NavMesh, turning your dummy markers into real cameras, vans and loot, and injecting all the heist managers.
+The SDK's exporter writes both files for you, so you never hand-edit the JSON. At startup the game scans `BepInEx/plugins` (including subfolders) for `*.gtimap.json` and registers every map it finds, then handles the rest at runtime: listing it in the lobby's Match Settings map picker, warning players who do not have it, loading the bundle on every machine, baking the NavMesh, turning your dummy markers into real cameras, vans and loot, and injecting all the heist managers.
 
 | Field | Required | Purpose |
 |---|---|---|
@@ -233,13 +233,13 @@ A BepInEx plugin is arbitrary code with full access to the machine it runs on. T
 
 None of this makes installing mods risk-free. A gameplay mod is still code you are choosing to run, and you should get mods from sources you trust. It just means installing a *map* is not that.
 
-### Building a custom map (IST_MapSDK)
+### Building a custom map (GTI_MapSDK)
 
-Maps are built in the separate **IST_MapSDK** Unity project, not the full game project. It runs the same Unity version (6000.x) and is preconfigured so you can start immediately. It ships the dummy prefabs, the marker and zone scripts, and the exporter, plus an example scene at `Project/Scenes/demomap` that demonstrates dummy placement, NpcZones, and a layout you can copy. The SDK mirrors the game's folder layout, so `Project/Scenes/`, `Project/Scripts/` and the rest line up with the real project.
+Maps are built in the separate **GTI_MapSDK** Unity project, not the full game project. It runs the same Unity version (6000.x) and is preconfigured so you can start immediately. It ships the dummy prefabs, the marker and zone scripts, and the exporter, plus an example scene at `Project/Scenes/demomap` that demonstrates dummy placement, NpcZones, and a layout you can copy. The SDK mirrors the game's folder layout, so `Project/Scenes/`, `Project/Scripts/` and the rest line up with the real project.
 
-1. Open `IST_MapSDK` and open `Project/Scenes/demomap` for reference, or start a new scene.
+1. Open `GTI_MapSDK` and open `Project/Scenes/demomap` for reference, or start a new scene.
 2. Build your level. Import your own assets (3D models, materials, textures) and lay it out.
-3. Place the dummy prefabs where things should appear in-game. Each carries an `ISTMapMarker`:
+3. Place the dummy prefabs where things should appear in-game. Each carries an `GTIMapMarker`:
 
    | Dummy prefab | Becomes in-game |
    |---|---|
@@ -249,10 +249,10 @@ Maps are built in the separate **IST_MapSDK** Unity project, not the full game p
    | `Dummy_Camera` | A security camera, aimed along the object's forward arrow |
 
 4. Add `NpcZone` components for the crowd. **Public** zones go in walkable and hallway areas, where customers and police spawn, and **Store** zones go over shops. No zones means no NPCs.
-5. Optionally, add one `ISTMapConfig` to a root object to tune the loot budget.
-6. Save the scene, then run **IST > Export Current Map**. Fill in your map's **ID**, **display name** and **version**, which are remembered per scene so re-exporting is one click, then hit Export. It validates your markers, warns about any scripts the game will strip, excludes the default camera and light, and writes both files to `MapExports/`.
+5. Optionally, add one `GTIMapConfig` to a root object to tune the loot budget.
+6. Save the scene, then run **GTI > Export Current Map**. Fill in your map's **ID**, **display name** and **version**, which are remembered per scene so re-exporting is one click, then hit Export. It validates your markers, warns about any scripts the game will strip, excludes the default camera and light, and writes both files to `MapExports/`.
 
-The bundle is named `<scene>` lower-cased plus `_map`, so a scene called `Demo` exports `demo_map`, and the manifest is that name plus `.istmap.json`.
+The bundle is named `<scene>` lower-cased plus `_map`, so a scene called `Demo` exports `demo_map`, and the manifest is that name plus `.gtimap.json`.
 
 ### Installing the map
 
@@ -262,7 +262,7 @@ Deployment is manual on purpose, so re-exporting a map is just dropping in the n
 BepInEx/plugins/
 └── DemoMap/
     ├── demomap_map
-    └── demomap_map.istmap.json
+    └── demomap_map.gtimap.json
 ```
 
 The map then appears in the lobby's Match Settings map picker on every machine that has it.
@@ -279,15 +279,15 @@ To publish on Thunderstore, package that folder as normal. No DLL, and no depend
 * Ensure mods match the game version.
 * Check `BepInEx/LogOutput.log` for errors.
 * Some mods require dependencies, which mod managers handle automatically.
-* For maps, confirm the `bundle` value in the `.istmap.json` exactly matches the bundle file sitting next to it. A name mismatch logs "bundle ... not found" and is the most common reason a map will not load. Copy both files together, since neither works alone.
-* If a map loads but is missing things you placed, check `LogOutput.log` for `[IST.Maps] Sanitizer: removed ...` lines. Custom maps may not carry script components, and the SDK exporter warns about this before you export.
+* For maps, confirm the `bundle` value in the `.gtimap.json` exactly matches the bundle file sitting next to it. A name mismatch logs "bundle ... not found" and is the most common reason a map will not load. Copy both files together, since neither works alone.
+* If a map loads but is missing things you placed, check `LogOutput.log` for `[GTI.Maps] Sanitizer: removed ...` lines. Custom maps may not carry script components, and the SDK exporter warns about this before you export.
 
 </details>
 
 ---
 
 <p align="center">
-  <a href="https://store.steampowered.com/app/4919380/Idiots_Stealing_Things/"><b>Wishlist on Steam</b></a>
+  <a href="https://store.steampowered.com/app/4919380/Grand_Theft_Idiots/"><b>Wishlist on Steam</b></a>
   &nbsp;&bull;&nbsp;
   <a href="https://discord.gg/azsScpGF5p"><b>Join the Discord</b></a>
 </p>

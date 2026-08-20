@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: BlackScale
-  productName: Idiots Stealing Things Map SDK
+  productName: Grand Theft Idiots Map SDK
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.0754717, g: 0.0754717, b: 0.0754717, a: 1}

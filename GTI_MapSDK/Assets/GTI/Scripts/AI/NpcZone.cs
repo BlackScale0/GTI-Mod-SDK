@@ -126,10 +126,7 @@ public class NpcZone : MonoBehaviour
     /// calls its stockroom. Everything else uses the name set in the Inspector, falling back to
     /// whatever the zone object itself was called.
     /// </summary>
-    public string DisplayName =>
-        isRestrictedArea
-            ? IST.Localization.Loc.Get("phone.restrictedArea")
-            : (string.IsNullOrWhiteSpace(displayName) ? gameObject.name : displayName);
+    public string DisplayName => gameObject.name;
 
     /// <summary>
     /// Stable identifier for this zone across the network. Zones are plain scene objects with no

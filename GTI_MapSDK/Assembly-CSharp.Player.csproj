@@ -61,11 +61,11 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Data\Tools\BuildPipeline\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\IST\Scripts\Maps\ISTMapMarker.cs" />
-    <Compile Include="Assets\IST\Scripts\Items\ItemSize.cs" />
-    <Compile Include="Assets\IST\Scripts\Maps\ISTMapConfig.cs" />
-    <Compile Include="Assets\IST\Scripts\AI\NpcZone.cs" />
-    <Compile Include="Assets\IST\Scripts\Items\ItemData.cs" />
+    <Compile Include="Assets\GTI\Scripts\Items\ItemSize.cs" />
+    <Compile Include="Assets\GTI\Scripts\AI\NpcZone.cs" />
+    <Compile Include="Assets\GTI\Scripts\Items\ItemData.cs" />
+    <Compile Include="Assets\GTI\Scripts\Maps\GTIMapConfig.cs" />
+    <Compile Include="Assets\GTI\Scripts\Maps\GTIMapMarker.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

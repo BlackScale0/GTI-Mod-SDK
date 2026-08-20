@@ -1,6 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ISTMapConfig : MonoBehaviour
+public class GTIMapConfig : MonoBehaviour
 {
     [Header("Loot Budget")]
     [Tooltip("Minimum number of loot points the game fills with items each round (clamped to the number of LootSpawn markers present).")]
